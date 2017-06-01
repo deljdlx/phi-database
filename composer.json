@@ -1,0 +1,14 @@
+{
+	"name": "phi-database",
+	"description": "Phi database",
+	"autoload": {
+		"psr-4": {
+			"Phi\\Database\\": "source/class"
+		},
+		"files": [
+
+		]
+	}
+}
+
+
