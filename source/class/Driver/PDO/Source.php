@@ -11,9 +11,9 @@ class Source extends \PDO implements Driver
 
     private $dsn;
 
-    public function __construct($dsn, $login='', $password='')
+    public function __construct($dsn, $login = '', $password = '')
     {
-        $this->dsn=$dsn;
+        $this->dsn = $dsn;
         parent::__construct($dsn, $login, $password);
     }
 
@@ -23,21 +23,42 @@ class Source extends \PDO implements Driver
         return $this->quote($string);
     }
 
-    public function query($query)
+    public function query($query, array $parameters = array())
     {
+        if (empty($parameters)) {
+            $statement = new Statement(parent::query($query));
+            return $statement;
+        }
+        else {
+            $statement = $this->prepare($query);
+            if (!$statement) {
 
-        $statement = new Statement(parent::query($query));
+                $errorInfo = $this->errorInfo();
+                $message = '';
+                foreach ($errorInfo as $key => $value) {
+                    $message .= '[' . $key . "] " . $value . "\n";
+                }
 
-        return $statement;
+                throw new \Exception(
+                    'PDO error : ' . $message
+                );
+            }
+
+            $result = $statement->execute($parameters);
+            if ($result) {
+                return new Statement($statement);
+            }
+            else {
+                return null;
+            }
+        }
     }
+
 
     public function getLastInsertId($name = null)
     {
         return $this->lastInsertId($name);
     }
-
-
-
 
 
 }
