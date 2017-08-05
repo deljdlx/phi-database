@@ -10,29 +10,24 @@ use \Phi\Database\Interfaces\Statement as PhiStatement;
  * @property \Phi\Database\Interfaces\Statement driver
  * @package Phi\Database
  */
-class Statement
+abstract class Statement
 {
 
-    protected $driver;
-
-    public function __construct(PhiStatement $statement)
+    public function __construct()
     {
-        $this->driver = $statement;
+
     }
 
 
-    public function fetchAssoc()
-    {
-        return $this->driver->fetchAssoc();
-    }
+    abstract public function fetchAssoc();
+
 
     public function fetchAll()
     {
         $returnValues = array();
-        if ($this->driver) {
-            while ($row = $this->driver->fetchAssoc()) {
-                $returnValues[] = $row;
-            }
+
+        while ($row = $this->fetchAssoc()) {
+            $returnValues[] = $row;
         }
         return $returnValues;
     }
