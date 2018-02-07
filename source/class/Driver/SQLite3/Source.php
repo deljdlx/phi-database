@@ -22,13 +22,28 @@ class Source extends \SQLite3 implements Driver
         return $this->escapeString($string);
     }
 
-    public function query($query)
+    public function query($query, $parameters = null)
     {
+        if(is_array($parameters)) {
+            $statement = $this->prepare($query);
 
-        $statement = new Statement(
-            new \Phi\Database\Driver\SQLite3\Statement(parent::query($query))
-        );
-        return $statement;
+            foreach ($parameters as $parameter => $value) {
+                $statement->bindValue($parameter, $value);
+            }
+
+            $resultStatement =  new Statement(
+                new \Phi\Database\Driver\SQLite3\Statement($statement->execute())
+            );
+
+            return $resultStatement;
+
+        }
+        else {
+            $statement = new Statement(
+                new \Phi\Database\Driver\SQLite3\Statement(parent::query($query))
+            );
+            return $statement;
+        }
     }
 
 

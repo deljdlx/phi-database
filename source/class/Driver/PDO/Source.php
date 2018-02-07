@@ -23,11 +23,26 @@ class Source extends \PDO implements Driver
         return $this->quote($string);
     }
 
-    public function query($query, array $parameters = array())
+    public function query($query, $parameters = array())
     {
         if (empty($parameters)) {
-            $statement = new Statement(parent::query($query));
-            return $statement;
+
+            $returnValue = parent::query($query);
+            if($returnValue) {
+                $statement = new Statement($returnValue);
+                return $statement;
+            }
+
+            $errorInfo = $this->errorInfo();
+            $message = '';
+            foreach ($errorInfo as $key => $value) {
+                $message .= '[' . $key . "] " . $value . "\n";
+            }
+
+            throw new \Exception(
+                'PDO error : ' . $message
+            );
+
         }
         else {
             $statement = $this->prepare($query);

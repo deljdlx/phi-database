@@ -13,7 +13,7 @@ use Phi\Object;
  * @property Driver source
  * @package Phi\Database
  */
-class Source extends Object
+class Source
 {
 
     protected $source = null;
@@ -35,17 +35,17 @@ class Source extends Object
         return $this->source->escape($string);
     }
 
-    public function query($query)
+    public function query($query, $parameters = null)
     {
-        $statement = $this->source->query($query);
+        $statement = $this->source->query($query, $parameters);
         return $statement;
     }
 
 
-    public function queryAndFetch($query)
+    public function queryAndFetch($query, $parameters = null)
     {
 
-        $statement = $this->query($query);
+        $statement = $this->query($query, $parameters);
         $returnValues = array();
         if ($statement) {
             while ($row = $statement->fetchAssoc()) {
@@ -55,11 +55,11 @@ class Source extends Object
         return $returnValues;
     }
 
-    public function queryAndFetchOne($query)
+    public function queryAndFetchOne($query, $parameters = null)
     {
 
         $returnValues = array();
-        $statement = $this->query($query);
+        $statement = $this->query($query, $parameters);
         if ($statement) {
             $returnValues = $statement->fetchAssoc();
         }
@@ -75,6 +75,13 @@ class Source extends Object
             return false;
         }
     }
+
+    public function getLastInsertId($name = null)
+    {
+        return $this->source->lastInsertId($name);
+    }
+
+
 
 
 }
