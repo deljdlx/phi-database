@@ -30,7 +30,7 @@ class Source
     }
 
 
-    public function escape($string)
+    public function escape($string, $type = null)
     {
         return $this->source->escape($string);
     }
@@ -66,9 +66,9 @@ class Source
         return $returnValues;
     }
 
-    public function queryAndFetchValue($query)
+    public function queryAndFetchValue($query, $parameters = null)
     {
-        $row = $this->queryAndFetchOne($query);
+        $row = $this->queryAndFetchOne($query, $parameters);
         if (!empty($row)) {
             return reset($row);
         } else {
