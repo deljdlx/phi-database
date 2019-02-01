@@ -28,6 +28,11 @@ class Source
         return $this->source;
     }
 
+    public function getError()
+    {
+        return $this->source->getError();
+    }
+
 
     public function escape($string, $type = null)
     {
@@ -45,6 +50,8 @@ class Source
     {
 
         $statement = $this->query($query, $parameters);
+
+
         $returnValues = array();
         if ($statement) {
             while ($row = $statement->fetchAssoc()) {

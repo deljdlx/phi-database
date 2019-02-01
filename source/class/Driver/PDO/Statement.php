@@ -9,6 +9,10 @@ class Statement extends PhiStatement implements \Phi\Database\Interfaces\Stateme
 
     protected $statement;
 
+    public function getStatement() {
+        return $this->statement;
+    }
+
     public function __construct(\PDOStatement $statement)
     {
         $this->statement = $statement;
@@ -17,6 +21,11 @@ class Statement extends PhiStatement implements \Phi\Database\Interfaces\Stateme
     public function fetchAssoc()
     {
         return $this->statement->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    public function getError()
+    {
+        return $this->statement->errorInfo ();
     }
 
 }

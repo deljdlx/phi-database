@@ -59,12 +59,25 @@ class Source extends \PDO implements Driver
                 );
             }
 
+
+
             $result = $statement->execute($parameters);
             if ($result) {
                 return new Statement($statement);
             }
             else {
-                return null;
+                if($statement->errorInfo()) {
+                    $errorInfo = $statement->errorInfo();
+                    $message = '';
+                    foreach ($errorInfo as $key => $value) {
+                        $message .= '[' . $key . "] " . $value . "\n";
+                    }
+
+                    throw new \Exception(
+                        'PDO error : ' . $message
+                    );
+                }
+                return new Statement($statement);;
             }
         }
     }
@@ -73,6 +86,11 @@ class Source extends \PDO implements Driver
     public function getLastInsertId($name = null)
     {
         return $this->lastInsertId($name);
+    }
+
+    public function getError()
+    {
+        return $this->errorInfo ();
     }
 
 
