@@ -23,6 +23,12 @@ class Source extends \MySQLi implements Driver
         return parent::escape_string($string);
     }
 
+    public function escapeField($string)
+    {
+        return '`'.$string.'`';
+    }
+
+
     public function query($query)
     {
 

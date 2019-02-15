@@ -39,6 +39,11 @@ class Source
         return $this->source->escape($string);
     }
 
+    public function escapeField($string, $type = null)
+    {
+        return $this->source->escapeField($string);
+    }
+
     public function query($query, $parameters = null)
     {
         $statement = $this->source->query($query, $parameters);

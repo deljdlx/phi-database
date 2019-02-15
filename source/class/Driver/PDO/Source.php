@@ -23,6 +23,12 @@ class Source extends \PDO implements Driver
         return $this->quote($string);
     }
 
+    public function escapeField($string)
+    {
+        return '`'.$string.'`';
+    }
+
+
     public function query($query, $parameters = array())
     {
         if (empty($parameters)) {

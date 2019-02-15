@@ -22,6 +22,12 @@ class Source extends \SQLite3 implements Driver
         return $this->escapeString($string);
     }
 
+    public function escapeField($string)
+    {
+        return '`'.$string.'`';
+    }
+
+
     public function query($query, $parameters = null)
     {
         if(is_array($parameters)) {
