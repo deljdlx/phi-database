@@ -3,6 +3,7 @@
 
 namespace Phi\Database\Driver\PDO;
 
+use Phi\Database\FieldDescriptor;
 use Phi\Database\Interfaces\Driver;
 
 class Source extends \PDO implements Driver
@@ -11,7 +12,7 @@ class Source extends \PDO implements Driver
 
     private $dsn;
 
-    public function __construct($dsn, $login = '', $password = '')
+    public function __construct($dsn, $login = '', $password = '' , $options = null)
     {
         $this->dsn = $dsn;
         parent::__construct($dsn, $login, $password);
@@ -28,7 +29,43 @@ class Source extends \PDO implements Driver
         return '`'.$string.'`';
     }
 
+    public function getDescriptor($tableName)
+    {
 
+        $fields = [];
+        if(preg_match('`^sqlite:`', $this->dsn)) {
+            $query ='PRAGMA table_info('.$this->escape($tableName).');';
+            $rows = $this->query($query)->fetchAll();
+            foreach ($rows as $values) {
+                $descriptor = new FieldDescriptor();
+                $descriptor->loadFromSQLite($values);
+                $fields[] = $descriptor;
+            }
+        }
+        elseif(preg_match('`^mysql:`', $this->dsn)) {
+            $query ='DESCRIBE '.$tableName.';';
+            $rows = $this->query($query)->fetchAll();
+
+            foreach ($rows as $values) {
+                $descriptor = new FieldDescriptor();
+                $descriptor->loadFromMySQL($values);
+                $fields[] = $descriptor;
+            }
+        }
+
+
+        return $fields;
+        //return $rows;
+
+    }
+
+
+    /**
+     * @param string $query
+     * @param array $parameters
+     * @return \Phi\Database\Statement
+     * @throws \Exception
+     */
     public function query($query, $parameters = array())
     {
         if (empty($parameters)) {
