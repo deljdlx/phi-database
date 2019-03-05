@@ -3,14 +3,14 @@
 
 namespace Phi\Database\Driver\MySQLi;
 
-use \Phi\Database\Interfaces\Statement as PhiStatement;
+use \Phi\Database\Statement as PhiStatement;
 
 /**
  * Class Statement
  * @property \MySQLi_result statement
  * @package Phi\Database\SQLite3
  */
-class Statement implements PhiStatement
+class Statement extends PhiStatement implements \Phi\Database\Interfaces\Statement
 {
 
     protected $statement;

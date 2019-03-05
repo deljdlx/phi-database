@@ -4,8 +4,7 @@
 namespace Phi\Database\Driver\MySQLi;
 
 
-use Phi\Database\Statement;
-use Phi\Exception;
+use Phi\Database\Exception;
 use Phi\Database\Interfaces\Driver;
 
 class Source extends \MySQLi implements Driver
@@ -25,7 +24,24 @@ class Source extends \MySQLi implements Driver
 
     public function escapeField($string)
     {
-        return '`'.$string.'`';
+        return '`' . $string . '`';
+    }
+
+
+    public function getDescriptor($tableName)
+    {
+
+        $fields = [];
+
+        $query = 'DESCRIBE ' . $tableName . ';';
+        $rows = $this->query($query)->fetchAll();
+
+        foreach ($rows as $values) {
+            $descriptor = new FieldDescriptor();
+            $descriptor->loadFromMySQL($values);
+            $fields[] = $descriptor;
+        }
+        return $fields;
     }
 
 
@@ -36,16 +52,19 @@ class Source extends \MySQLi implements Driver
 
         if ($driverStatement instanceof \MySQLi_result) {
 
-            $statement = new Statement(
-                new \Phi\Database\Driver\MySQLi\Statement($driverStatement)
-            );
+            $statement = new Statement($driverStatement);
+
             return $statement;
-        } else if ($driverStatement === true) {
+        }
+        else if ($driverStatement === true) {
             return true;
-        } else {
+        }
+        else {
             throw new Exception('Query "' . $query . '" failed');
         }
     }
+
+
 
     public function getLastInsertId()
     {
