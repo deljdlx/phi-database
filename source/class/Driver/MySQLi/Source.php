@@ -5,6 +5,7 @@ namespace Phi\Database\Driver\MySQLi;
 
 
 use Phi\Database\Exception;
+use Phi\Database\FieldDescriptor;
 use Phi\Database\Interfaces\Driver;
 
 class Source extends \MySQLi implements Driver
@@ -45,10 +46,10 @@ class Source extends \MySQLi implements Driver
     }
 
 
-    public function query($query)
+    public function query($query, $resultmode = null)
     {
 
-        $driverStatement = parent::query($query);
+        $driverStatement = parent::query($query, $resultmode);
 
         if ($driverStatement instanceof \MySQLi_result) {
 
