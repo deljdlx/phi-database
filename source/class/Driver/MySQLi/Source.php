@@ -52,7 +52,7 @@ class Source extends \MySQLi implements Driver
 
         $formetedParameters = [];
         foreach ($parameters as $parametersName => $value) {
-            
+
             $query = preg_replace('`'.$parametersName.'`', '?', $query);
             if(is_string($value)) {
                 $bindType = 's';

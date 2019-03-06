@@ -89,7 +89,7 @@ class Source
 
     public function getLastInsertId($name = null)
     {
-        return $this->source->lastInsertId($name);
+        return $this->source->getLastInsertId($name);
     }
 
     public function getDescriptor($tableName)
