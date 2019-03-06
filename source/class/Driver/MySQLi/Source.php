@@ -46,10 +46,73 @@ class Source extends \MySQLi implements Driver
     }
 
 
-    public function query($query, $resultmode = null)
+
+    public function preparedQuery($query, array $parameters = array())
     {
 
-        $driverStatement = parent::query($query, $resultmode);
+        $formetedParameters = [];
+        foreach ($parameters as $parametersName => $value) {
+            
+            $query = preg_replace('`'.$parametersName.'`', '?', $query);
+            if(is_string($value)) {
+                $bindType = 's';
+            }
+            else if(is_float($value)) {
+                $bindType = 'd';
+            }
+            else if(is_int($value)) {
+                $bindType = 'i';
+            }
+
+            $formetedParameters[] = array(
+                'type' => $bindType,
+                'value' => $value
+            );
+        }
+
+        $statement = $this->prepare($query);
+        $bind = '';
+        $values = [];
+
+        foreach ($formetedParameters as $parameter) {
+
+            $bind .= $parameter['type'];
+            $values[] = &$parameter['value'];
+        }
+
+        $bindParameters = [];
+        $bindParameters[] = $bind;
+        $bindParameters = array_merge($bindParameters, $values);
+
+
+
+        call_user_func_array(
+            array($statement, 'bind_param'), $bindParameters
+        );
+
+        $statement->execute();
+
+        $result = $statement->get_result();
+        if($result) {
+            $phiStatement = new Statement($result);
+            return $phiStatement;
+        }
+
+
+    }
+
+
+    public function query($query, $parameters = null)
+    {
+
+
+        if(!empty($parameters)) {
+            return $this->preparedQuery($query, $parameters);
+        }
+
+
+
+        $driverStatement = parent::query($query, $parameters );
 
         if ($driverStatement instanceof \MySQLi_result) {
 
