@@ -14,6 +14,8 @@ class FieldDescriptor implements \ArrayAccess, \JsonSerializable
     protected $name;
 
     protected $isPrimaryKey = false;
+    protected $isLabel = false;
+    protected $defaultValue = null;
 
 
 
@@ -24,6 +26,8 @@ class FieldDescriptor implements \ArrayAccess, \JsonSerializable
         if($values['pk'] == 1) {
             $this->isPrimaryKey = true;
         }
+
+        $this->defaultValue = $values['dflt_value'];
 
         $this->setVariables($values);
         $this->name = $values['name'];
@@ -49,9 +53,12 @@ class FieldDescriptor implements \ArrayAccess, \JsonSerializable
         return $this->name;
     }
 
-    public function isLabel()
+    public function isLabel($value = null)
     {
-        return false;
+        if($value !== null) {
+            $this->isLabel = $value;
+        }
+        return $this->isLabel;
     }
 
     public function isPrimaryKey()
@@ -63,6 +70,11 @@ class FieldDescriptor implements \ArrayAccess, \JsonSerializable
     public function jsonSerialize()
     {
         return $this->getVariables();
+    }
+
+    public function getDefaultValue()
+    {
+        return $this->defaultValue;
     }
 
 
