@@ -85,11 +85,22 @@ class Source extends \MySQLi implements Driver
         $bindParameters = array_merge($bindParameters, $values);
 
 
+        $parametersByReference = [];
+        foreach ($bindParameters as &$parameter) {
+            $parametersByReference[] = &$parameter;
+        }
+
+
         call_user_func_array(
-            array($statement, 'bind_param'), $bindParameters
+            array($statement, 'bind_param'), $parametersByReference
         );
 
         $statement->execute();
+
+        if($statement->error) {
+
+            throw new Exception($statement->error);
+        }
 
         $result = $statement->get_result();
         if($result) {
