@@ -63,6 +63,10 @@ class Source extends \MySQLi implements Driver
             else if(is_int($value)) {
                 $bindType = 'i';
             }
+            else {
+                throw new Exception('Can no determine parameter bind type (Provided value : "'.$value.'") (Query : "'.$query.'"');
+            }
+
 
             $formetedParameters[] = array(
                 'type' => $bindType,
