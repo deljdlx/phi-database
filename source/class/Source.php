@@ -51,6 +51,20 @@ class Source
     }
 
 
+    public function getCompiledQuery($query, $parameters = null)
+    {
+        if(method_exists($this->source, 'getCompiledQuery')) {
+            return $this->source->getCompiledQuery($query, $parameters);
+        }
+        else {
+            throw new Exception('Current driver ('.get_class($this->source).' does not implements getCompiledQuery method');
+        }
+
+    }
+
+
+
+
     public function queryAndFetch($query, $parameters = null)
     {
 

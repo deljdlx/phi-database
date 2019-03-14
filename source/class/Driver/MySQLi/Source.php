@@ -50,10 +50,9 @@ class Source extends \MySQLi implements Driver
     public function preparedQuery($query, array $parameters = array())
     {
 
-        $formetedParameters = [];
+        $formatedParameters = [];
         foreach ($parameters as $parametersName => $value) {
 
-            $query = preg_replace('`'.$parametersName.'`', '?', $query);
             if(is_string($value)) {
                 $bindType = 's';
             }
@@ -68,17 +67,41 @@ class Source extends \MySQLi implements Driver
             }
 
 
-            $formetedParameters[] = array(
+            $formatedParameters[$parametersName] = array(
+                //'key' => $parametersName,
                 'type' => $bindType,
                 'value' => $value
             );
         }
 
+        $parametersForBind = [];
+
+        $query = preg_replace_callback('`(:\w+)`', function($matches) use($formatedParameters, &$parametersForBind) {
+
+            $key = $matches[1];
+
+            if(isset($formatedParameters[$key])) {
+                $parametersForBind[] = $formatedParameters[$key];
+            }
+
+            return '?';
+
+
+        }, $query);
+
         $statement = $this->prepare($query);
+
+        if(!$statement) {
+            throw new Exception(
+               $this->getError()
+            );
+        }
+
+
         $bind = '';
         $values = [];
 
-        foreach ($formetedParameters as $parameter) {
+        foreach ($parametersForBind as $parameter) {
 
             $bind .= $parameter['type'];
             $values[] = &$parameter['value'];
@@ -111,22 +134,35 @@ class Source extends \MySQLi implements Driver
             $phiStatement = new Statement($result);
             return $phiStatement;
         }
-
-
     }
+
+    public function getCompiledQuery($query, $parameters = null)
+    {
+        if(empty($parameters)) {
+            return $query;
+        }
+        else {
+            $compiledQuery = $query;
+            foreach ($parameters as $parameterName => $value) {
+                $compiledQuery = preg_replace('`'.$parameterName.'`', $value, $compiledQuery);
+            }
+            return $compiledQuery;
+
+        }
+    }
+
+
 
 
     public function query($query, $parameters = null)
     {
-
 
         if(!empty($parameters)) {
             return $this->preparedQuery($query, $parameters);
         }
 
 
-
-        $driverStatement = parent::query($query, $parameters );
+        $driverStatement = parent::query($query );
 
         if ($driverStatement instanceof \MySQLi_result) {
 
