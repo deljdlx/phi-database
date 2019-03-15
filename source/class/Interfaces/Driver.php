@@ -8,10 +8,15 @@ interface Driver
 
     public function escape($value);
 
-    public function query($query);
+    public function escapeField($fieldName);
+
+    public function query($query, $parameters = null);
 
 
     public function getLastInsertId();
+
+
+    public function getError();
 
 
 

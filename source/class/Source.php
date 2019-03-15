@@ -39,9 +39,9 @@ class Source
         return $this->source->escape($string);
     }
 
-    public function escapeField($string, $type = null)
+    public function escapeField($fieldName)
     {
-        return $this->source->escapeField($string);
+        return $this->source->escapeField($fieldName);
     }
 
     public function query($query, $parameters = null)
