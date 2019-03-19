@@ -34,7 +34,9 @@ class Source extends \PDO implements Driver
 
         $fields = [];
         if(preg_match('`^sqlite:`', $this->dsn)) {
+
             $query ='PRAGMA table_info('.$this->escape($tableName).');';
+
             $rows = $this->query($query)->fetchAll();
             foreach ($rows as $values) {
                 $descriptor = new FieldDescriptor();
@@ -52,7 +54,6 @@ class Source extends \PDO implements Driver
                 $fields[] = $descriptor;
             }
         }
-
 
         return $fields;
         //return $rows;
