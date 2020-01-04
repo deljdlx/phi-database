@@ -4,7 +4,6 @@
 namespace Phi\Database\Driver\SQLite3;
 
 
-use Phi\Database\Statement;
 use Phi\Database\Interfaces\Driver;
 
 class Source extends \SQLite3 implements Driver
@@ -37,17 +36,14 @@ class Source extends \SQLite3 implements Driver
                 $statement->bindValue($parameter, $value);
             }
 
-            $resultStatement =  new Statement(
-                new \Phi\Database\Driver\SQLite3\Statement($statement->execute())
-            );
+            $resultStatement =  new \Phi\Database\Driver\SQLite3\Statement($statement->execute());
+
 
             return $resultStatement;
 
         }
         else {
-            $statement = new Statement(
-                new \Phi\Database\Driver\SQLite3\Statement(parent::query($query))
-            );
+            $statement = new \Phi\Database\Driver\SQLite3\Statement(parent::query($query));
             return $statement;
         }
     }
@@ -69,6 +65,11 @@ class Source extends \SQLite3 implements Driver
     }
 
     public function autocommit($value = null)
+    {
+
+    }
+
+    public function getError()
     {
 
     }

@@ -1,5 +1,5 @@
 {
-	"name": "phi-database",
+	"name": "elbiniou/phi-database",
 	"description": "Phi database",
 	"autoload": {
 		"psr-4": {
