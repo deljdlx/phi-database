@@ -3,7 +3,7 @@
 
 namespace Phi\Database\Driver\SQLite3;
 
-
+use Phi\Database\Exception;
 use Phi\Database\Interfaces\Driver;
 
 class Source extends \SQLite3 implements Driver
@@ -56,7 +56,13 @@ class Source extends \SQLite3 implements Driver
 
     public function getLastInsertId()
     {
-
+        $data = $this->query('SELECT last_insert_rowid() as id')->fetchAssoc();
+        if(array_key_exists('id', $data)) {
+            return $data['id'];
+        }
+        else {
+            throw new Exception("Can not access last insert id");
+        }
     }
 
     public function commit()
