@@ -137,6 +137,16 @@ class Source extends \PDO implements Driver
         return $this->errorInfo ();
     }
 
+    public function startTransaction()
+    {
+        $this->beginTransaction();
+    }
+
+    public function commit()
+    {
+        $this->commit();
+    }
+
 
 }
 

@@ -59,9 +59,14 @@ class Source extends \SQLite3 implements Driver
 
     }
 
+    public function startTransaction()
+    {
+        $this->exec('BEGIN;');
+    }
+
     public function commit()
     {
-
+        $this->exec('COMMIT;');
     }
 
     public function autocommit($value = null)

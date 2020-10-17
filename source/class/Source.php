@@ -111,6 +111,15 @@ class Source
         return $this->source->getDescriptor($tableName);
     }
 
+    public function startTransaction()
+    {
+        return $this->source->startTransaction();
+    }
+
+    public function commit()
+    {
+        return $this->source->commit();
+    }
 
 }
 
